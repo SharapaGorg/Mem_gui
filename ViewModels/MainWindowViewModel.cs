@@ -1,57 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace MEM_GUI.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        
-        [NotNull]
-        private static string Main()
-        {
-            var currentPath = Directory.GetCurrentDirectory();
-            var handledPath = GetPrimaryTreeElem("/" + currentPath);
 
-            var dirNames = DirNamesFiller(handledPath);
+        private static string Add()
+        {
+
+            var currentPath = Directory.GetCurrentDirectory();
+            var handledPath = "/" + GetPrimaryTreeElem("/" + currentPath);
+            Console.WriteLine(handledPath);
+
             var info = new DirectoryInfo(handledPath);
 
-            var renderResult = "";
-            
-            foreach (var dir in info.GetDirectories("*", SearchOption.AllDirectories))
+            var container = new HashSet<string>();
+            var addContainer = new HashSet<string>();
+
+            try
             {
-                var elem = dir.ToString();
-                var res = $"{GetDirectorySize("/" + elem)} --- {elem}\n";
 
-                if (dirNames != null)
-                    foreach (var dirName in dirNames)
-                    {
-                        var dirNameSize = GetDirectorySize("/" +  elem);
-                        
-                        if (elem != dirName) continue;
+                Parallel.ForEach(info.GetDirectories("*", SearchOption.AllDirectories), (dir) =>
+                {
 
-                        renderResult += res;
+                    var elem = dir.ToString();
+                    var lastElem = GetLastTreeElem(elem);
+                    var lastElemSize = DirSize(new DirectoryInfo(elem));
 
-                        // Console.WriteLine(res);
-                    }
+                    var dirname = dir.ToString().Split("/")[^1];
+
+                    if (dirname == "root" || addContainer.Contains(dirname) || lastElemSize <= 1000000) return;
+                    container.Add($"{lastElem,30} --- {lastElemSize}");
+                    addContainer.Add(lastElem);
+                    
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
-            return renderResult;
-        }
-        
-        [NotNull] public string Greeting => Main();
+            var renderResult = "";
+            var counter = 0;
 
-        [NotNull]
+            foreach (var elem in container)
+            {
+                counter += 1;
+                
+                if (counter > 30) continue;
+
+                renderResult += (elem + "\n");
+            }
+
+            renderResult += (container.Count + "\n");
+            
+            return renderResult;
+
+        }
+
+
+        [NotNull] public string Greeting => Add();
+
+        [CanBeNull]
         private static string GetPrimaryTreeElem(string path)
         {
-            path = path.Replace("/", " ");
+            var res = path.Split("/");
 
-            var res = path.Split();
-
-            return res[1];
+            return res[2];
         }
 
         [NotNull]
@@ -64,28 +83,28 @@ namespace MEM_GUI.ViewModels
             return res[^1];
         }
 
-        private static long GetDirectorySize([NotNull] string path)
+        private static long DirSize([NotNull] DirectoryInfo d, long aLimit = 0)
         {
-            var info = new DirectoryInfo(path);
+            long size = 0;
+            var fis = d.GetFiles();
 
-            return info.GetFiles("*", SearchOption.AllDirectories).Sum(file => file.Length);
-        }
-
-        [CanBeNull]
-        private static List<string> DirNamesFiller([NotNull] string path)
-        {
-            var info = new DirectoryInfo(path);
-            var handledList = new List<string>();
-            
-            foreach (var elem in info.GetFiles("*", SearchOption.AllDirectories))            
+            foreach (var fi in fis)
             {
-                handledList.Add(elem.ToString());
+                size += fi.Length;
+                if (aLimit > 0 && size > aLimit)
+                    return size;
             }
 
-            var res = handledList.Distinct().ToList();
+            var dis = d.GetDirectories();
+            foreach (var di in dis)
+            {
+                size += DirSize(di, aLimit);
+                if (aLimit > 0 && size > aLimit)
+                    return size;
+            }
 
-            return res;
+            return size;
         }
+
     }
-    
 }

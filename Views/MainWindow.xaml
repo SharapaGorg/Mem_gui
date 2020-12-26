@@ -13,8 +13,8 @@
     </Design.DataContext>
     <Grid>
         <StackPanel>
-            <TextBlock Text = "List of PC directories : " HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
-            <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text = "PC directories:" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
+            <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         </StackPanel>
     </Grid>
 </Window>
