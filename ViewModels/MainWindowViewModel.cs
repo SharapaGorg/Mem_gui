@@ -51,10 +51,11 @@ namespace MEM_GUI.ViewModels
 
             foreach (var elem in container)
             {
-
-                var name = elem.Split("---")[0];
-                var size = Convert.ToInt32(elem.Split("---")[^1]);
-                var path = elem.Split("---")[1];
+                var body = elem.Split("---");
+                
+                var name = body[0];
+                var size = Convert.ToInt32(body[^1]);
+                var path = body[1];
 
                 renderResult.Add(new DirPart(name, path, size));
             }
