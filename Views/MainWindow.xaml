@@ -9,12 +9,14 @@
         Title="MEM_GUI">
 
     <Design.DataContext>
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid>
-        <StackPanel>
-            <TextBlock Text = "PC directories:" HorizontalAlignment="Center" VerticalAlignment="Top"></TextBlock>
-            <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        </StackPanel>
+        <!-- <StackPanel> -->
+        <!--     <TextBlock Text="PC directories:" HorizontalAlignment="Center" VerticalAlignment="Top" /> -->
+        <!--     ~1~ <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Top" /> @1@ -->
+        <!-- </StackPanel> -->
+        <ListBox Items="{Binding Greeting}" />
     </Grid>
+
 </Window>

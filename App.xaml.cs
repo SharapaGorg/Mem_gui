@@ -1,8 +1,12 @@
+#region
+
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using MEM_GUI.ViewModels;
 using MEM_GUI.Views;
+
+#endregion
 
 namespace MEM_GUI
 {
@@ -16,12 +20,10 @@ namespace MEM_GUI
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
                 desktop.MainWindow = new MainWindow
                 {
                     DataContext = new MainWindowViewModel(),
                 };
-            }
 
             base.OnFrameworkInitializationCompleted();
         }

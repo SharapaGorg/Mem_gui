@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#region
+
 using ReactiveUI;
+
+#endregion
 
 namespace MEM_GUI.ViewModels
 {
